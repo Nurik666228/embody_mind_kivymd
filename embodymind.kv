@@ -1,0 +1,27 @@
+<WindowManager>:
+    MainMenu:
+
+<MainMenu>:
+    LabelUnderline:
+
+<LabelUnderline@FloatLayout>:
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1.5
+            points: (0 + self.width / 4, self.height - self.height * 16.7 / 100, self.width - self.width / 4, self.height - self.height * 16.7 / 100)
+
+
+# класс отвечающий за задний фон всех меню
+# времмено не используется
+<MenuBackground@FloatLayout>:
+     # создание заднего фона
+    canvas.before:
+        Color:
+            # цвет ниже это rgb(255, 229, 180)
+            rgba: (255/255, 229/255, 180/255, 1)
+        Rectangle:
+            # self here refers to the widget i.e FloatLayout
+            pos: self.pos
+            size: self.size
