@@ -10,10 +10,51 @@ from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
+from kivy.properties import StringProperty
+from types import SimpleNamespace
+
+# импорируются три файла с языками
+from en import en
+from ru import ru
+from kaz import kaz
+
+# открывает файл с заданным языком и записывает текущий язык
+with open("selected_lang.txt") as file_object:
+    language = file_object.read()
+    current_lang = language.rstrip()
+
+
+# класс создающий хорошо структурированный словарь со всеми языками
+class NestedNamespace(SimpleNamespace):
+    def __init__(self, dictionary, **kwargs):
+        super().__init__(**kwargs)
+        for key, value in dictionary.items():
+            if isinstance(value, dict):
+                self.__setattr__(key, NestedNamespace(value))
+            else:
+                self.__setattr__(key, value)
+
+
+# создание словаря со всеми языками
+text = {}
+text.update({"en": NestedNamespace(en)})
+text.update({"ru": NestedNamespace(ru)})
+text.update({"kaz": NestedNamespace(kaz)})
 
 
 class MainMenu(Screen):  # главное меню
+    global text, current_lang
     quit_dialog = None
+
+    # текст главного меню
+    play_btn = StringProperty(text[current_lang].main_menu.play_btn)
+    settings_btn = StringProperty(text[current_lang].main_menu.settings_btn)
+    quit_btn = StringProperty(text[current_lang].main_menu.quit_btn)
+
+    # текст диалогового окна закрытия приложения
+    title = StringProperty(text[current_lang].quit_dialog.title)
+    cancel_btn = StringProperty(text[current_lang].quit_dialog.cancel_btn)
+    yes_btn = StringProperty(text[current_lang].quit_dialog.yes_btn)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -26,10 +67,10 @@ class MainMenu(Screen):  # главное меню
     def show_quit_dialog(self):  # показывает диалоговое окно закрытия приложения
         if not self.quit_dialog:
             self.quit_dialog = MDDialog(
-                title="Are you sure?",
+                title=self.title,
                 buttons=[
-                    MDFlatButton(text="Cancel", font_style="Button", on_release=self.close_quit_dialog),
-                    MDFlatButton(text="Yes", font_style="Button", on_release=self.close_app)
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_quit_dialog),
+                    MDFlatButton(text=self.yes_btn, font_style="Button", on_release=self.close_app)
                 ]
             )
 
