@@ -4,6 +4,35 @@
 <MainMenu>:
     LabelUnderline:
 
+    MDRectangleFlatButton:
+        id: play_button
+        text: "Play"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        size_hint: (0.5, 0.09)
+        line_width: 1.5
+        font_style: "Button"
+        on_release:
+
+    MDRectangleFlatButton:
+        id: settings_button
+        text: "Settings"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+        size_hint: (0.5, 0.09)
+        line_width: 1.5
+        font_style: "Button"
+        on_release:
+
+
+    MDRectangleFlatButton:
+        id: quit_button
+        text: "Quit"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+        size_hint: (0.5, 0.09)
+        line_width: 1.5
+        font_style: "Button"
+        on_release:
+            root.show_quit_dialog()
+
 <LabelUnderline@FloatLayout>:
     canvas:
         Color:

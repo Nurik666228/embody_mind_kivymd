@@ -6,27 +6,40 @@ Config.set('graphics', 'height', '600')
 
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRectangleFlatButton
+from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton
 from kivymd.uix.label import MDLabel
+from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
 
 
 class MainMenu(Screen):  # главное меню
+    quit_dialog = None
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         label = MDLabel(text='Embody Mind', pos_hint={'center_x': 0.5, 'center_y': 0.9},
                         size_hint=(0.5, 0.1), halign='center', font_style="H5")
-        button_1 = MDRectangleFlatButton(text='Play', pos_hint={'center_x': 0.5, 'center_y': 0.6},
-                                         size_hint=(0.5, 0.09), line_width=1.5, font_style="Button")
-        button_2 = MDRectangleFlatButton(text='Settings', pos_hint={'center_x': 0.5, 'center_y': 0.45},
-                                         size_hint=(0.5, 0.09), line_width=1.5, font_style="Button")
-        button_3 = MDRectangleFlatButton(text='Quit', pos_hint={'center_x': 0.5, 'center_y': 0.3},
-                                         size_hint=(0.5, 0.09), line_width=1.5, font_style="Button")
         self.add_widget(label)
-        self.add_widget(button_1)
-        self.add_widget(button_2)
-        self.add_widget(button_3)
+        # остальные кнопки в kv file
+
+    def show_quit_dialog(self):  # показывает диалоговое окно закрытия приложения
+        if not self.quit_dialog:
+            self.quit_dialog = MDDialog(
+                title="Are you sure?",
+                buttons=[
+                    MDFlatButton(text="Cancel", font_style="Button", on_release=self.close_quit_dialog),
+                    MDFlatButton(text="Yes", font_style="Button", on_release=self.close_app)
+                ]
+            )
+
+        self.quit_dialog.open()
+
+    def close_quit_dialog(self, obj):  # закрытие диалога (отмена)
+        self.quit_dialog.dismiss()
+
+    def close_app(self, obj):  # закрытие приложения
+        MDApp.get_running_app().stop()
 
     # функция выполняется каждый раз когда изменяется размер окна
     def on_size(self, *args):
