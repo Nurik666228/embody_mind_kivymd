@@ -1,7 +1,11 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
 <WindowManager>:
     MainMenu:
+    SettingsMenu:
 
 <MainMenu>:
+    name: "MainMenu"
     LabelUnderline:
 
     MDRectangleFlatButton:
@@ -21,6 +25,8 @@
         line_width: 1.5
         font_style: "Button"
         on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "SettingsMenu"
 
 
     MDRectangleFlatButton:
@@ -32,7 +38,64 @@
         font_style: "Button"
         on_release:
             root.show_quit_dialog()
-            print("negr")
+
+
+<SettingsMenu>:
+    name: "SettingsMenu"
+    # полоска под лейблом "язык"
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1.5
+            points: (0 + self.width / 4, self.height - self.height * 45 / 100, self.width - self.width / 4, self.height - self.height * 45 / 100)
+
+    # верхняя менюшка
+    MDTopAppBar:
+        id: settings_top_bar
+        pos_hint: {"right": 1, "top": 1}
+        title: root.title
+        anchor_title: "left"
+        md_bg_color: "#616161"
+        left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
+
+    MDSwitch:
+        id: music_switch
+        pos_hint: {'center_x': .75, 'center_y': 0.786}
+        active: True
+
+    MDSwitch:
+        id: sounds_switch
+        pos_hint: {'center_x': .75, 'center_y': 0.686}
+        active: True
+
+    MDRectangleFlatButton:
+        id: english_btn
+        text: "English"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_release: root.change_language("en")
+
+    MDRectangleFlatButton:
+        id: russian_btn
+        text: "Русский"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_release: root.change_language("ru")
+
+    MDRectangleFlatButton:
+        id: kazakh_btn
+        text: "Қазақша"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_release: root.change_language("kaz")
+
 
 <LabelUnderline@FloatLayout>:
     canvas:
@@ -40,11 +103,11 @@
             rgba: 0, 0, 0, 1
         Line:
             width: 1.5
-            points: (0 + self.width / 4, self.height - self.height * 16.7 / 100, self.width - self.width / 4, self.height - self.height * 16.7 / 100)
+            points: (0 + self.width / 4, self.height - self.height * 20 / 100, self.width - self.width / 4, self.height - self.height * 20 / 100)
 
 
 # класс отвечающий за задний фон всех меню
-# времмено не используется
+# временно не используется
 <MenuBackground@FloatLayout>:
      # создание заднего фона
     canvas.before:
