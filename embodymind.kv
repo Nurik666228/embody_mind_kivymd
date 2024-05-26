@@ -15,6 +15,7 @@
         size_hint: (0.5, 0.09)
         line_width: 1.5
         font_style: "Button"
+        on_press: app.play_click_sound()
         on_release:
 
     MDRectangleFlatButton:
@@ -24,6 +25,7 @@
         size_hint: (0.5, 0.09)
         line_width: 1.5
         font_style: "Button"
+        on_press: app.play_click_sound()
         on_release:
             root.manager.transition = NoTransition()
             root.manager.current = "SettingsMenu"
@@ -36,6 +38,7 @@
         size_hint: (0.5, 0.09)
         line_width: 1.5
         font_style: "Button"
+        on_press: app.play_click_sound()
         on_release:
             root.show_quit_dialog()
 
@@ -59,24 +62,39 @@
         md_bg_color: "#616161"
         left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
 
-    MDSwitch:
+    #MDSwitch:
+        #id: music_switch
+        #pos_hint: {'center_x': .75, 'center_y': 0.786}
+        #active: True
+
+    #MDSwitch:
+        #id: sounds_switch
+        #pos_hint: {'center_x': .75, 'center_y': 0.686}
+        #active: True
+
+    AnchorLayout:
         id: music_switch
         pos_hint: {'center_x': .75, 'center_y': 0.786}
-        active: True
+        BigTouchSwitch:
+            active: self.music_state
+            on_active: root.check_music_state()
 
-    MDSwitch:
+    AnchorLayout:
         id: sounds_switch
         pos_hint: {'center_x': .75, 'center_y': 0.686}
-        active: True
+        BigTouchSwitch:
+            active: self.sound_state
+            on_active: root.check_sounds_state()
 
     MDRectangleFlatButton:
         id: english_btn
-        text: "English"
+        text: "Қазақша"
         pos_hint: {'center_x': 0.5, 'center_y': 0.45}
         size_hint: (0.4, 0.05)
         line_width: 1.3
         font_style: "Button"
-        on_release: root.change_language("en")
+        on_press: app.play_click_sound()
+        on_release: root.change_language("kaz")
 
     MDRectangleFlatButton:
         id: russian_btn
@@ -85,17 +103,27 @@
         size_hint: (0.4, 0.05)
         line_width: 1.3
         font_style: "Button"
+        on_press: app.play_click_sound()
         on_release: root.change_language("ru")
 
     MDRectangleFlatButton:
         id: kazakh_btn
-        text: "Қазақша"
+        text: "English"
         pos_hint: {'center_x': 0.5, 'center_y': 0.25}
         size_hint: (0.4, 0.05)
         line_width: 1.3
         font_style: "Button"
-        on_release: root.change_language("kaz")
+        on_press: app.play_click_sound()
+        on_release: root.change_language("en")
 
+# кастомная кнопка выключатель/включатель
+<BigTouchSwitch>:
+    #increases the area that responds to touch
+    size_hint: None, None
+    size: switch.size[0] + dp(45), switch.size[1] + dp(0)
+    MDSwitch:
+        id: switch
+        active: root.active
 
 <LabelUnderline@FloatLayout>:
     canvas:

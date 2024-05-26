@@ -1,27 +1,29 @@
 from kivy.config import Config
 
-# конфигурация окна (добавлен ради тестировки, будет убран при релизе)
+# конфигурация окна (добавлен ради тестирования, будет убран при релизе)
 Config.set('graphics', 'width', '300')
 Config.set('graphics', 'height', '600')
 
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
+from kivymd.uix.anchorlayout import MDAnchorLayout
 from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, BooleanProperty
 from types import SimpleNamespace
-
-# импорируются три файла с языками
+from kivy.core.audio import SoundLoader
+import json
+# импортируются три файла с языками
 from en import en
 from ru import ru
 from kaz import kaz
 
-# открывает файл с заданным языком и записывает текущий язык
-with open("selected_lang.txt") as file_object:
-    language = file_object.read()
-    current_lang = language.rstrip()
+# открывает файл с параметрами и записывает текущий язык
+with open("settings.json", "r") as f:
+    settings = json.load(f)
+    current_lang = settings["language"]
 
 
 # класс создающий хорошо структурированный словарь со всеми языками
@@ -41,9 +43,17 @@ text.update({"en": NestedNamespace(en)})
 text.update({"ru": NestedNamespace(ru)})
 text.update({"kaz": NestedNamespace(kaz)})
 
+music = SoundLoader.load('audio/music1.wav')
+click = SoundLoader.load('audio/click.mp3')
+if settings["music_state"]:
+    print("Sound found at %s" % music.source)
+    print("Sound is %.3f seconds" % music.length)
+    music.loop = True
+    music.play()
+
 
 class MainMenu(Screen):  # главное меню
-    global text, current_lang
+    global text, current_lang, settings
     quit_dialog = None
 
     # текст главного меню
@@ -77,6 +87,7 @@ class MainMenu(Screen):  # главное меню
         self.quit_dialog.open()
 
     def close_quit_dialog(self, obj):  # закрытие диалога (отмена)
+        EmbodyMindApp().play_click_sound()
         self.quit_dialog.dismiss()
 
     def close_app(self, obj):  # закрытие приложения
@@ -94,10 +105,10 @@ class MainMenu(Screen):  # главное меню
 
 
 class SettingsMenu(Screen):
-    global text, current_lang
+    global text, current_lang, settings, music
     change_lang_dialog = None
     # текст настроек
-    title = StringProperty(text[current_lang].settings_menu.music_label)
+    title = StringProperty(text[current_lang].settings_menu.title)
     music_label = StringProperty(text[current_lang].settings_menu.music_label)
     sounds_label = StringProperty(text[current_lang].settings_menu.sounds_label)
     language_label = StringProperty(text[current_lang].settings_menu.language_label)
@@ -121,7 +132,34 @@ class SettingsMenu(Screen):
         self.add_widget(language_label)
 
     def return_to_main_menu(self):
+        EmbodyMindApp().play_click_sound()
         self.manager.current = "MainMenu"
+
+    def check_music_state(self):
+        EmbodyMindApp().play_click_sound()
+        if settings["music_state"]:
+            settings["music_state"] = False
+        else:
+            settings["music_state"] = True
+
+        if settings["music_state"]:
+            music.loop = True
+            music.play()
+        else:
+            music.stop()
+
+        with open("settings.json", "w") as file:
+            json.dump(settings, file)
+
+    def check_sounds_state(self):
+        if settings["sound_state"]:
+            settings["sound_state"] = False
+        else:
+            settings["sound_state"] = True
+            EmbodyMindApp().play_click_sound()
+
+        with open("settings.json", "w") as file:
+            json.dump(settings, file)
 
     def change_language(self, lang):
         self.lang = lang
@@ -143,12 +181,14 @@ class SettingsMenu(Screen):
         self.change_lang_dialog.open()
 
     def close_restart_dialog(self, obj):  # закрытие диалога (отмена)
+        EmbodyMindApp().play_click_sound()
         self.change_lang_dialog.dismiss()
 
     def close_app(self, obj):  # закрытие приложения
         # код перезаписывающий текущий язык на новый, смена языка требует перезагрузки программы
-        with open("selected_lang.txt", "w") as file:
-            file.write(self.lang)
+        settings["language"] = self.lang
+        with open("settings.json", "w") as file:
+            json.dump(settings, file)
         MDApp.get_running_app().stop()  # закрытие приложения
 
     # функция выполняется каждый раз когда изменяется размер окна
@@ -159,16 +199,42 @@ class SettingsMenu(Screen):
             Rectangle(pos=self.pos, size=self.size)
 
 
+class BigTouchSwitch(MDAnchorLayout):  # класс кастомного выключателя музыки и аудио
+    active = BooleanProperty(True)
+    music_state = BooleanProperty(settings["music_state"])
+    sound_state = BooleanProperty(settings["sound_state"])
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            self.active = not self.active
+            return True
+        return super().on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        if self.collide_point(*touch.pos):
+            return True
+        return super().on_touch_up(touch)
+
+
+class GamesMenu(Screen):
+    pass
+
+
 class WindowManager(ScreenManager):
     pass
 
 
 class EmbodyMindApp(MDApp):
+    global settings, click
 
     def build(self):
         self.theme_cls.primary_palette = "Gray"  # цвет темы
         self.theme_cls.primary_hue = "A700"  # яркость цвета темы
         return WindowManager()
+
+    def play_click_sound(self):
+        if settings["sound_state"]:
+            click.play()
 
 
 if __name__ == "__main__":
