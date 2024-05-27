@@ -7,13 +7,15 @@ Config.set('graphics', 'height', '600')
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.anchorlayout import MDAnchorLayout
-from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton
+from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton, MDRectangleFlatIconButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
 from kivy.properties import StringProperty, BooleanProperty
 from types import SimpleNamespace
 from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
+
 import json
 # импортируются три файла с языками
 from en import en
@@ -217,11 +219,36 @@ class BigTouchSwitch(MDAnchorLayout):  # класс кастомного вык�
 
 
 class GamesMenu(Screen):
-    pass
+    def return_to_main_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "MainMenu"
+
+    # функция выполняется каждый раз когда изменяется размер окна
+    def on_size(self, *args):
+        # задний фон меню (перерисовывается каждый раз когда меняется размер окна)
+        with self.canvas.before:
+            Color(255 / 255, 229 / 255, 180 / 255)
+            Rectangle(pos=self.pos, size=self.size)
+
+
+class Game1Menu(Screen):
+    def return_to_games_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "GamesMenu"
 
 
 class WindowManager(ScreenManager):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_keyboard=self.key_input)
+
+    def key_input(self, window, key, scancode, codepoint, modifier):
+        if key == 27:
+            if self.current != "MainMenu":
+                self.current = self.previous()
+            return True
+        else:  # the key now does nothing
+            return False
 
 
 class EmbodyMindApp(MDApp):
