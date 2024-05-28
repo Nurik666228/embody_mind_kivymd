@@ -16,6 +16,7 @@ from types import SimpleNamespace
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 
+from random import randint
 import json
 # импортируются три файла с языками
 from en import en
@@ -48,14 +49,14 @@ text.update({"kaz": NestedNamespace(kaz)})
 music = SoundLoader.load('audio/music1.wav')
 click = SoundLoader.load('audio/click.mp3')
 if settings["music_state"]:
-    print("Sound found at %s" % music.source)
-    print("Sound is %.3f seconds" % music.length)
+    # print("Sound found at %s" % music.source)
+    # print("Sound is %.3f seconds" % music.length)
     music.loop = True
     music.play()
 
 
 class MainMenu(Screen):  # главное меню
-    global text, current_lang, settings
+    global text, current_lang
     quit_dialog = None
 
     # текст главного меню
@@ -67,14 +68,6 @@ class MainMenu(Screen):  # главное меню
     title = StringProperty(text[current_lang].quit_dialog.title)
     cancel_btn = StringProperty(text[current_lang].quit_dialog.cancel_btn)
     yes_btn = StringProperty(text[current_lang].quit_dialog.yes_btn)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        label = MDLabel(text='Embody Mind', pos_hint={'center_x': 0.5, 'center_y': 0.85},
-                        size_hint=(0.5, 0.1), halign='center', font_style="H5")
-        self.add_widget(label)
-        # остальные кнопки в kv file
 
     def show_quit_dialog(self):  # показывает диалоговое окно закрытия приложения
         if not self.quit_dialog:
@@ -96,14 +89,16 @@ class MainMenu(Screen):  # главное меню
         MDApp.get_running_app().stop()
 
     # функция выполняется каждый раз когда изменяется размер окна
-    def on_size(self, *args):
+    # убран с рабочего кода после рефакторинга, оставлен для возможных будущих целей
+    """def on_size(self, *args):
         width = self.width
         height = self.height
         print(width, height)
         # задний фон меню (перерисовывается каждый раз когда меняется размер окна)
         with self.canvas.before:
-            Color(255 / 255, 229 / 255, 180 / 255)
+            Color(255 / 255, 183 / 255, 80 / 255)
             Rectangle(pos=self.pos, size=self.size)
+    """
 
 
 class SettingsMenu(Screen):
@@ -120,18 +115,6 @@ class SettingsMenu(Screen):
     dialog_text = StringProperty(text[current_lang].change_lang_dialog.text)
     cancel_btn = StringProperty(text[current_lang].change_lang_dialog.cancel_btn)
     yes_btn = StringProperty(text[current_lang].change_lang_dialog.yes_btn)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        music_label = MDLabel(text=self.music_label, pos_hint={'center_x': 0.25, 'center_y': 0.8},
-                              size_hint=(0.5, 0.1), halign="center", font_style="H6")
-        sound_label = MDLabel(text=self.sounds_label, pos_hint={'center_x': 0.25, 'center_y': 0.7},
-                              size_hint=(0.5, 0.1), halign="center", font_style="H6")
-        language_label = MDLabel(text=self.language_label, pos_hint={'center_x': 0.5, 'center_y': 0.6},
-                                 size_hint=(0.5, 0.1), halign="center", font_style="H6")
-        self.add_widget(music_label)
-        self.add_widget(sound_label)
-        self.add_widget(language_label)
 
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
@@ -193,13 +176,6 @@ class SettingsMenu(Screen):
             json.dump(settings, file)
         MDApp.get_running_app().stop()  # закрытие приложения
 
-    # функция выполняется каждый раз когда изменяется размер окна
-    def on_size(self, *args):
-        # задний фон меню (перерисовывается каждый раз когда меняется размер окна)
-        with self.canvas.before:
-            Color(255 / 255, 229 / 255, 180 / 255)
-            Rectangle(pos=self.pos, size=self.size)
-
 
 class BigTouchSwitch(MDAnchorLayout):  # класс кастомного выключателя музыки и аудио
     active = BooleanProperty(True)
@@ -219,25 +195,118 @@ class BigTouchSwitch(MDAnchorLayout):  # класс кастомного вык�
 
 
 class GamesMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].games_menu.top_title)
+    guess_the_number_game = StringProperty(text[current_lang].games_menu.guess_the_number_game)
+
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
         self.manager.current = "MainMenu"
 
-    # функция выполняется каждый раз когда изменяется размер окна
-    def on_size(self, *args):
-        # задний фон меню (перерисовывается каждый раз когда меняется размер окна)
-        with self.canvas.before:
-            Color(255 / 255, 229 / 255, 180 / 255)
-            Rectangle(pos=self.pos, size=self.size)
 
+class GuessTheNumberMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].guess_the_number_menu.top_title)
+    game_name = StringProperty(text[current_lang].guess_the_number_menu.game_name)
+    game_description = StringProperty(text[current_lang].guess_the_number_menu.game_description)
 
-class Game1Menu(Screen):
     def return_to_games_menu(self):
         EmbodyMindApp().play_click_sound()
         self.manager.current = "GamesMenu"
 
 
+class GuessTheNumberGame(Screen):
+    restart_dialog = None
+    global text, current_lang
+    game_label_text = StringProperty(text[current_lang].guess_the_number_game.game_label_text)
+    enter_btn = StringProperty(text[current_lang].guess_the_number_game.enter_btn)
+    empty_textfield_mistake = StringProperty(text[current_lang].guess_the_number_game.empty_textfield_mistake)
+    small_number_mistake = StringProperty(text[current_lang].guess_the_number_game.small_number_mistake)
+    big_number_mistake = StringProperty(text[current_lang].guess_the_number_game.big_number_mistake)
+    greater_number = StringProperty(text[current_lang].guess_the_number_game.greater_number)
+    lesser_number = StringProperty(text[current_lang].guess_the_number_game.lesser_number)
+    win_label = StringProperty(text[current_lang].guess_the_number_game.win_label)
+
+    # текст диалогового окна перезагрузки мини игры
+    dialog_title = StringProperty(text[current_lang].guess_the_number_reset_dialog.dialog_title)
+    dialog_text = StringProperty(text[current_lang].guess_the_number_reset_dialog.dialog_text)
+    cancel_btn = StringProperty(text[current_lang].guess_the_number_reset_dialog.cancel_btn)
+    confirm_btn = StringProperty(text[current_lang].guess_the_number_reset_dialog.confirm_btn)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # game_text = MDLabel(text=self.game_label_text, pos_hint={'center_x': 0.5, 'center_y': 0.65},
+        # size_hint=(0.5, 0.1), halign='center', font_style="H5", radius=(1, 1, 1, 1))
+        # self.add_widget(game_text)
+        self.create_random_number()
+
+    def create_random_number(self):
+        self.random_number = (randint(1, 1000))
+        print(self.random_number)
+
+    def check_number(self, *args):
+        global current_lang
+        input_number = self.ids.number_input.text
+        if input_number == "":
+            self.game_label_text = self.empty_textfield_mistake
+            pass
+        else:
+            input_number = int(input_number)
+
+            if input_number <= 0:
+                self.game_label_text = self.small_number_mistake
+            elif input_number > 1000:
+                self.game_label_text = self.big_number_mistake
+            else:
+                if input_number < self.random_number:
+                    if current_lang == "kaz":
+                        self.game_label_text = f"{input_number}, {self.lesser_number}"
+                    else:
+                        self.game_label_text = f"{self.greater_number} {input_number}"
+                elif input_number > self.random_number:
+                    if current_lang == "kaz":
+                        self.game_label_text = f"{input_number}, {self.greater_number}"
+                    else:
+                        self.game_label_text = f"{self.lesser_number} {input_number}"
+                else:
+                    self.game_label_text = self.win_label
+                    self.show_restart_dialog()
+
+    def show_restart_dialog(self):  # показывает диалоговое окно закрытия приложения
+        if not self.restart_dialog:
+            self.restart_dialog = MDDialog(
+                title=self.dialog_title,
+                text=self.dialog_text,
+                buttons=[
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_restart_dialog),
+                    MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
+                ]
+            )
+
+        self.restart_dialog.open()
+
+    def close_restart_dialog(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.exit_restart_game()
+        self.restart_dialog.dismiss()
+        self.manager.current = "GamesMenu"
+
+    def restart_game(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.create_random_number()
+        self.game_label_text = text[current_lang].guess_the_number_game.game_label_text
+        self.ids.number_input.text = ""
+        self.restart_dialog.dismiss()
+
+    def exit_restart_game(self):
+        self.create_random_number()
+        self.game_label_text = text[current_lang].guess_the_number_game.game_label_text
+        self.ids.number_input.text = ""
+
+
 class WindowManager(ScreenManager):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Window.bind(on_keyboard=self.key_input)
@@ -245,7 +314,10 @@ class WindowManager(ScreenManager):
     def key_input(self, window, key, scancode, codepoint, modifier):
         if key == 27:
             if self.current != "MainMenu":
-                self.current = self.previous()
+                if self.current == "GamesMenu":
+                    self.current = "MainMenu"
+                else:
+                    self.current = self.previous()
             return True
         else:  # the key now does nothing
             return False
@@ -253,7 +325,6 @@ class WindowManager(ScreenManager):
 
 class EmbodyMindApp(MDApp):
     global settings, click
-
     def build(self):
         self.theme_cls.primary_palette = "Gray"  # цвет темы
         self.theme_cls.primary_hue = "A700"  # яркость цвета темы
@@ -266,3 +337,4 @@ class EmbodyMindApp(MDApp):
 
 if __name__ == "__main__":
     EmbodyMindApp().run()
+# 332 строк до рефакторинга

@@ -3,16 +3,27 @@
 <WindowManager>:
     MainMenu:
     SettingsMenu:
-    MainMenu:
     GamesMenu:
-    Game1Menu:
+    GuessTheNumberMenu:
+    GuessTheNumberGame:
 
 <MainMenu>:
     name: "MainMenu"
+    MenuBackground:
     LabelUnderline:
+    BoxLayout:
+        id: game_title
+        pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: 'Embody Mind'
+            halign: 'center'
+            font_style: "H5"
 
     MDRectangleFlatButton:
         id: play_button
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
         text: root.play_btn
         pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         size_hint: (0.5, 0.09)
@@ -25,6 +36,8 @@
 
     MDRectangleFlatButton:
         id: settings_button
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
         text: root.settings_btn
         pos_hint: {'center_x': 0.5, 'center_y': 0.45}
         size_hint: (0.5, 0.09)
@@ -35,9 +48,10 @@
             root.manager.transition = NoTransition()
             root.manager.current = "SettingsMenu"
 
-
     MDRectangleFlatButton:
         id: quit_button
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
         text: root.quit_btn
         pos_hint: {'center_x': 0.5, 'center_y': 0.3}
         size_hint: (0.5, 0.09)
@@ -46,157 +60,6 @@
         on_press: app.play_click_sound()
         on_release:
             root.show_quit_dialog()
-
-
-<SettingsMenu>:
-    name: "SettingsMenu"
-    # полоска под лейблом "язык"
-    canvas:
-        Color:
-            rgba: 0, 0, 0, 1
-        Line:
-            width: 1.5
-            points: (0 + self.width / 4, self.height - self.height * 45 / 100, self.width - self.width / 4, self.height - self.height * 45 / 100)
-
-    # верхняя менюшка
-    MDTopAppBar:
-        id: settings_top_bar
-        pos_hint: {"right": 1, "top": 1}
-        title: root.title
-        anchor_title: "left"
-        md_bg_color: "#616161"
-        left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
-
-    #MDSwitch:
-        #id: music_switch
-        #pos_hint: {'center_x': .75, 'center_y': 0.786}
-        #active: True
-
-    #MDSwitch:
-        #id: sounds_switch
-        #pos_hint: {'center_x': .75, 'center_y': 0.686}
-        #active: True
-
-    AnchorLayout:
-        id: music_switch
-        pos_hint: {'center_x': .75, 'center_y': 0.786}
-        BigTouchSwitch:
-            active: self.music_state
-            on_active: root.check_music_state()
-
-    AnchorLayout:
-        id: sounds_switch
-        pos_hint: {'center_x': .75, 'center_y': 0.686}
-        BigTouchSwitch:
-            active: self.sound_state
-            on_active: root.check_sounds_state()
-
-    MDRectangleFlatButton:
-        id: english_btn
-        text: "Қазақша"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
-        size_hint: (0.4, 0.05)
-        line_width: 1.3
-        font_style: "Button"
-        on_press: app.play_click_sound()
-        on_release: root.change_language("kaz")
-
-    MDRectangleFlatButton:
-        id: russian_btn
-        text: "Русский"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
-        size_hint: (0.4, 0.05)
-        line_width: 1.3
-        font_style: "Button"
-        on_press: app.play_click_sound()
-        on_release: root.change_language("ru")
-
-    MDRectangleFlatButton:
-        id: kazakh_btn
-        text: "English"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-        size_hint: (0.4, 0.05)
-        line_width: 1.3
-        font_style: "Button"
-        on_press: app.play_click_sound()
-        on_release: root.change_language("en")
-
-
-# кастомная кнопка выключатель/включатель
-<BigTouchSwitch>:
-    #increases the area that responds to touch
-    size_hint: None, None
-    size: switch.size[0] + dp(45), switch.size[1] + dp(0)
-    MDSwitch:
-        id: switch
-        active: root.active
-
-
-<GamesMenu>:
-    name: "GamesMenu"
-
-    # верхняя менюшка
-    MDTopAppBar:
-        id: games_top_bar
-        pos_hint: {"right": 1, "top": 1}
-        title: "Games"
-        anchor_title: "left"
-        md_bg_color: "#616161"
-        left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        pos_hint: {"center_x": .25, "center_y": .75}
-        ripple_behavior: True
-        on_release:
-            root.manager.transition = NoTransition()
-            root.manager.current = "Game1Menu"
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        pos_hint: {"center_x": .75, "center_y": .75}
-        ripple_behavior: True
-        on_release:print("worked")
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        pos_hint: {"center_x": .25, "center_y": .50}
-        ripple_behavior: True
-        on_release:print("worked")
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        pos_hint: {"center_x": .75, "center_y": .50}
-        ripple_behavior: True
-        on_release:print("worked")
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        pos_hint: {"center_x": .25, "center_y": .25}
-        ripple_behavior: True
-        on_release:print("worked")
-
-    MDCard:
-        size_hint: (0.45, 0.2)
-        max_width: 50
-        pos_hint: {"center_x": .75, "center_y": .25}
-        ripple_behavior: True
-        on_release:print("worked")
-        MDLabel:
-            text: "Pedoras"
-
-<Game1Menu>:
-    name: "Game1Menu"
-    FloatLayout:
-        MenuBackground:
-        # верхняя менюшка
-        MDTopAppBar:
-            id: games_top_bar
-            pos_hint: {"right": 1, "top": 1}
-            title: "Games"
-            anchor_title: "left"
-            md_bg_color: "#616161"
-            left_action_items: [["arrow-left", lambda x: root.return_to_games_menu()]]
 
 <LabelUnderline@FloatLayout>:
     canvas:
@@ -207,6 +70,294 @@
             points: (0 + self.width / 4, self.height - self.height * 20 / 100, self.width - self.width / 4, self.height - self.height * 20 / 100)
 
 
+<SettingsMenu>:
+    name: "SettingsMenu"
+    MenuBackground:
+    SettingsLine:
+    # верхняя менюшка
+    MDTopAppBar:
+        id: settings_top_bar
+        pos_hint: {"right": 1, "top": 1}
+        elevation: 0
+        title: root.title
+        anchor_title: "left"
+        md_bg_color: "#616161"
+        left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
+
+    BoxLayout:
+        id: music_label
+        pos_hint: {'center_x': 0.25, 'center_y': 0.8}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.music_label
+            halign: "center"
+            font_style: "H6"
+
+    AnchorLayout:
+        id: music_switch
+        pos_hint: {'center_x': .75, 'center_y': 0.786}
+        BigTouchSwitch:
+            active: self.music_state
+            on_active: root.check_music_state()
+
+    BoxLayout:
+        id: sound_label
+        pos_hint: {'center_x': 0.25, 'center_y': 0.7}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.sounds_label
+            halign: "center"
+            font_style: "H6"
+
+    AnchorLayout:
+        id: sounds_switch
+        pos_hint: {'center_x': .75, 'center_y': 0.686}
+        BigTouchSwitch:
+            active: self.sound_state
+            on_active: root.check_sounds_state()
+
+    BoxLayout:
+        id: language_label
+        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.language_label
+            halign: "center"
+            font_style: "H6"
+
+    MDRectangleFlatButton:
+        id: english_btn
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        text: "Қазақша"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release: root.change_language("kaz")
+
+    MDRectangleFlatButton:
+        id: russian_btn
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        text: "Русский"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release: root.change_language("ru")
+
+    MDRectangleFlatButton:
+        id: kazakh_btn
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        text: "English"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+        size_hint: (0.4, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release: root.change_language("en")
+
+# кастомная кнопка выключатель/включатель
+<BigTouchSwitch>:
+    #increases the area that responds to touch
+    size_hint: None, None
+    size: switch.size[0] + dp(45), switch.size[1] + dp(0)
+    MDSwitch:
+        id: switch
+        active: root.active
+
+<SettingsLine@FloatLayout>:
+    # полоска под лейблом "язык"
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1.5
+            points: (0 + self.width / 4, self.height - self.height * 45 / 100, self.width - self.width / 4, self.height - self.height * 45 / 100)
+
+
+<GamesMenu>:
+    name: "GamesMenu"
+    MenuBackground:
+    # верхняя менюшка
+    MDTopAppBar:
+        id: games_top_bar
+        pos_hint: {"right": 1, "top": 1}
+        elevation: 0
+        title: root.top_title
+        anchor_title: "left"
+        md_bg_color: "#616161"
+        left_action_items: [["arrow-left", lambda x: root.return_to_main_menu()]]
+
+    MDCard:
+        id: guess_the_number_card
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .25, "center_y": .75}
+        orientation: "vertical"
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "GuessTheNumberMenu"
+        Image:
+            source: "images/guess_number.png"
+            size_hint_y: .7
+        MDLabel:
+            text: root.guess_the_number_game
+            halign: "center"
+            size_hint_y: .3
+
+    MDCard:
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .75, "center_y": .75}
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:print("worked")
+
+    MDCard:
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .25, "center_y": .50}
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:print("worked")
+
+    MDCard:
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .75, "center_y": .50}
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:print("worked")
+
+    MDCard:
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .25, "center_y": .25}
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:print("worked")
+
+    MDCard:
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        line_width: 1.5
+        size_hint: (0.45, 0.2)
+        pos_hint: {"center_x": .75, "center_y": .25}
+        orientation: "vertical"
+        ripple_behavior: True
+        on_press: app.play_click_sound()
+        on_release:print("worked")
+        Image:
+            source: "images/guess_number.png"
+            size_hint_y: .8
+        MDLabel:
+            text: "decoy"
+            halign: "center"
+            size_hint_y: .2
+
+
+<GuessTheNumberMenu>:
+    name: "GuessTheNumberMenu"
+    FloatLayout:
+        MenuBackground:
+        MDTopAppBar:
+            id: games_top_bar
+            pos_hint: {"right": 1, "top": 1}
+            elevation: 0
+            title: root.top_title
+            anchor_title: "left"
+            md_bg_color: "#616161"
+            left_action_items: [["arrow-left", lambda x: root.return_to_games_menu()]]
+
+        MDIconButton:
+            id: GTN_play_btn
+            icon: "play"
+            pos_hint: {"center_x": 0.5, "center_y": 0.6}
+            size_hint: (0.3, 0.15)
+            icon_size:"100dp"
+            on_press: app.play_click_sound()
+            on_release:
+                root.manager.transition = NoTransition()
+                root.manager.current = "GuessTheNumberGame"
+
+        BoxLayout:
+            id: GTN_game_name
+            pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_name
+                halign: 'center'
+                font_style: "H5"
+
+        BoxLayout:
+            id: GTN_game_info
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_description
+                halign: 'center'
+                font_style: "Subtitle1"
+
+
+<GuessTheNumberGame>:
+    name: "GuessTheNumberGame"
+    MenuBackground:
+    MDIconButton:
+        icon: "home"
+        pos_hint: {"center_x": 0.5, "center_y": 0.97}
+        on_press: app.play_click_sound()
+        on_release:
+            root.exit_restart_game()
+            root.manager.transition = NoTransition()
+            root.manager.current = "GamesMenu"
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.65}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.game_label_text
+            halign: 'center'
+            font_style: "H5"
+
+    MDTextField:
+        id: number_input
+        hint_text: "1-1000"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+        size_hint: (0.5, None)
+        input_filter: 'int'
+
+    MDRectangleFlatButton:
+        id: GTN_enter_number
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        text: root.enter_btn
+        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+        size_hint: (0.3, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release:
+            root.check_number()
+            number_input.text = ""
+
+
 # класс отвечающий за задний фон всех меню
 # временно не используется
 <MenuBackground@FloatLayout>:
@@ -214,7 +365,7 @@
     canvas.before:
         Color:
             # цвет ниже это rgb(255, 229, 180)
-            rgba: (255/255, 229/255, 180/255, 1)
+            rgba: (255/255, 183/255, 80/255, 1)
         Rectangle:
             # self here refers to the widget i.e FloatLayout
             pos: self.pos
