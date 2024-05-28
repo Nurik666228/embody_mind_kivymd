@@ -235,11 +235,13 @@ class GuessTheNumberGame(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        # game_text = MDLabel(text=self.game_label_text, pos_hint={'center_x': 0.5, 'center_y': 0.65},
-        # size_hint=(0.5, 0.1), halign='center', font_style="H5", radius=(1, 1, 1, 1))
-        # self.add_widget(game_text)
         self.create_random_number()
+        Window.bind(on_key_down=self._on_keyboard_down)
+
+    def _on_keyboard_down(self, instance, keyboard, keycode, text, modifiers):
+        if self.ids.number_input.focus and keycode == 40:  # 40 - Enter key pressed
+            self.check_number()
+            self.ids.number_input.text = ""
 
     def create_random_number(self):
         self.random_number = (randint(1, 1000))
@@ -325,6 +327,7 @@ class WindowManager(ScreenManager):
 
 class EmbodyMindApp(MDApp):
     global settings, click
+
     def build(self):
         self.theme_cls.primary_palette = "Gray"  # цвет темы
         self.theme_cls.primary_hue = "A700"  # яркость цвета темы
@@ -337,4 +340,3 @@ class EmbodyMindApp(MDApp):
 
 if __name__ == "__main__":
     EmbodyMindApp().run()
-# 332 строк до рефакторинга
