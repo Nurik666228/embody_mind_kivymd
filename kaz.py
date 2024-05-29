@@ -24,6 +24,7 @@ kaz = {
     "games_menu": {
         "top_title": "Ойындар",
         "guess_the_number_game": "Санды тап",
+        "true_false_math_game": "Дұрыс/Қате",
     },
     "guess_the_number_menu": {
         "top_title": "Ойындар",
@@ -43,6 +44,24 @@ kaz = {
     "guess_the_number_reset_dialog": {
         "dialog_title": "Сіз жеңдіңіз!",
         "dialog_text": "Тағы да ойнағыңыз келе ме?",
+        "cancel_btn": "Жоқ",
+        "confirm_btn": "Ия"
+    },
+    "true_false_math_menu": {
+        "top_title": "Ойындар",
+        "game_name": "Шын немесе Жалған",
+        "game_description": "Математикалық есептің ақиқат немесе жалған екенін таңдаңыз."
+    },
+    "true_false_math_game": {
+        "score": "Ұпай: ",
+        "timer_text": "Таймер: ",
+        "false_btn": "Жалған",
+        "true_btn": "Шын"
+    },
+    "true_false_math_lose_dialog": {
+        "dialog_title": "Сіз жеңілдіңіз",
+        "dialog_text_1": "сіздің ұпайыңыз: ",
+        "dialog_text_2": "Тағы да ойнағыңыз келе ме?",
         "cancel_btn": "Жоқ",
         "confirm_btn": "Ия"
     },

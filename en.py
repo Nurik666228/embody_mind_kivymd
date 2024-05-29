@@ -24,6 +24,7 @@ en = {
     "games_menu": {
         "top_title": "Games",
         "guess_the_number_game": "Guess the number",
+        "true_false_math_game": "True/False",
     },
     "guess_the_number_menu": {
         "top_title": "Games",
@@ -43,6 +44,24 @@ en = {
     "guess_the_number_reset_dialog": {
         "dialog_title": "You Won!",
         "dialog_text": "Do you want to play again?",
+        "cancel_btn": "No",
+        "confirm_btn": "Yes"
+    },
+    "true_false_math_menu": {
+        "top_title": "Games",
+        "game_name": "True or False",
+        "game_description": "Select whether the math problem is True or False."
+    },
+    "true_false_math_game": {
+        "score": "Score: ",
+        "timer_text": "Timer: ",
+        "false_btn": "False",
+        "true_btn": "True"
+    },
+    "true_false_math_lose_dialog": {
+        "dialog_title": "You lost",
+        "dialog_text_1": "your score: ",
+        "dialog_text_2": "Do you want to play again?",
         "cancel_btn": "No",
         "confirm_btn": "Yes"
     },

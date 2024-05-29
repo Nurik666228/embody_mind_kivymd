@@ -1,3 +1,6 @@
+import random
+import threading
+
 from kivy.config import Config
 
 # конфигурация окна (добавлен ради тестирования, будет убран при релизе)
@@ -11,12 +14,13 @@ from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton, MDRectangleFl
 from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
-from kivy.properties import StringProperty, BooleanProperty
+from kivy.properties import StringProperty, BooleanProperty, NumericProperty, Clock
 from types import SimpleNamespace
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 
 from random import randint
+import operator
 import json
 # импортируются три файла с языками
 from en import en
@@ -198,6 +202,7 @@ class GamesMenu(Screen):
     global text, current_lang
     top_title = StringProperty(text[current_lang].games_menu.top_title)
     guess_the_number_game = StringProperty(text[current_lang].games_menu.guess_the_number_game)
+    true_false_math_game = StringProperty(text[current_lang].games_menu.true_false_math_game)
 
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
@@ -244,7 +249,7 @@ class GuessTheNumberGame(Screen):
             self.ids.number_input.text = ""
 
     def create_random_number(self):
-        self.random_number = (randint(1, 1000))
+        self.random_number = randint(1, 1000)
         print(self.random_number)
 
     def check_number(self, *args):
@@ -290,7 +295,6 @@ class GuessTheNumberGame(Screen):
 
     def close_restart_dialog(self, obj):
         EmbodyMindApp().play_click_sound()
-        self.exit_restart_game()
         self.restart_dialog.dismiss()
         self.manager.current = "GamesMenu"
 
@@ -305,6 +309,182 @@ class GuessTheNumberGame(Screen):
         self.create_random_number()
         self.game_label_text = text[current_lang].guess_the_number_game.game_label_text
         self.ids.number_input.text = ""
+
+    def on_leave(self, *args):
+        self.exit_restart_game()
+
+
+class MathTrueFalseMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].true_false_math_menu.top_title)
+    game_name = StringProperty(text[current_lang].true_false_math_menu.game_name)
+    game_description = StringProperty(text[current_lang].true_false_math_menu.game_description)
+
+    def return_to_games_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "GamesMenu"
+
+
+class MathTrueFalseGame(Screen):
+    global text, current_lang
+    score = StringProperty(text[current_lang].true_false_math_game.score)
+    timer_text = StringProperty(text[current_lang].true_false_math_game.timer_text)
+    false_btn = StringProperty(text[current_lang].true_false_math_game.false_btn)
+    true_btn = StringProperty(text[current_lang].true_false_math_game.true_btn)
+
+    # текст диалогового окна при поражении
+    dialog_title = StringProperty(text[current_lang].true_false_math_lose_dialog.dialog_title)
+    dialog_text_1 = StringProperty(text[current_lang].true_false_math_lose_dialog.dialog_text_1)
+    dialog_text_2 = StringProperty(text[current_lang].true_false_math_lose_dialog.dialog_text_2)
+    cancel_btn = StringProperty(text[current_lang].true_false_math_lose_dialog.cancel_btn)
+    confirm_btn = StringProperty(text[current_lang].true_false_math_lose_dialog.confirm_btn)
+
+    lose_dialog = None
+    timer_value = 5
+    timer = NumericProperty(timer_value)
+    score_value = NumericProperty(0)
+    # current_operator = None
+    string_of_operator = None
+    solution = None
+    false_solution = None
+    math_problem = StringProperty("")
+
+    def on_enter(self, *args):
+        print("entered screen")
+        self.create_random_math_problem()
+        self.score_value = 0
+        self.clock_active = True
+        self.timer_value = 5
+        self.timer = 5
+        self.ids.timer_bar.value = 5
+        self.timer_start()
+
+    def timer_start(self):
+        # print("timer is on")
+        Clock.schedule_once(self.decrease_timer, 1)
+
+    def decrease_timer(self, dt):
+        if self.clock_active:
+            if self.timer <= 0:
+                print("timer stopped")
+                self.show_lose_dialog()
+            else:
+                self.timer -= 1
+                self.ids.timer_bar.value -= 1
+                # print(self.ids.timer_bar.value)
+                self.timer_start()
+
+    def on_leave(self, *args):
+        self.clock_active = False
+
+    def create_random_math_problem(self):
+        number1 = randint(1, 20)
+        number2 = randint(1, 20)
+        # number3 = randint(1, 10)
+        print(number1, number2)
+
+        ops = {
+            '+': operator.add,
+            '-': operator.sub,
+            '*': operator.mul,
+            '/': operator.truediv,  # use operator.div for Python 2
+        }
+
+        random_operator = randint(1, 4)
+        if random_operator == 1:
+            self.string_of_operator = "+"
+            print(self.string_of_operator)
+        elif random_operator == 2:
+            self.string_of_operator = "-"
+            print(self.string_of_operator)
+        elif random_operator == 3:
+            self.string_of_operator = "*"
+            print(self.string_of_operator)
+        else:
+            self.string_of_operator = "/"
+            print(self.string_of_operator)
+
+        if self.string_of_operator == "-":
+            if number1 < number2:
+                number1, number2 = number2, number1
+                print(number1, number2)
+
+        if self.string_of_operator == "*":
+            number1 = randint(1, 10)
+            number2 = randint(1, 10)
+
+        if self.string_of_operator == "/":
+            if number1 < number2:
+                number1, number2 = number2, number1
+                print(number1, number2)
+            while number1 / number2 != number1 // number2:
+                number1 += 1
+                print(f"Incremented: {number1}")
+
+        self.solution = ops[self.string_of_operator](number1, number2)
+        true_chance = randint(1, 2)
+        if true_chance == 1:
+            self.false_solution = self.solution
+        else:
+            random_false_number_detail = randint(1, 2)  # 1: decrement 2: increment
+            if random_false_number_detail == 1:
+                self.false_solution = randint(self.solution - 5, self.solution - 1)
+            else:
+                self.false_solution = randint(self.solution + 1, self.solution + 5)
+
+        self.math_problem = f"{number1} {self.string_of_operator} {number2} = {int(self.false_solution)}"
+
+    def check_if_true(self):
+        if self.solution == self.false_solution:
+            self.correct()
+        else:
+            self.incorrect()
+
+    def check_if_false(self):
+        if self.solution != self.false_solution:
+            self.correct()
+        else:
+            self.incorrect()
+
+    def correct(self):
+        self.score_value += 1
+        self.create_random_math_problem()
+        self.timer = self.timer_value
+        self.ids.timer_bar.value = self.timer_value
+
+    def incorrect(self):
+        self.show_lose_dialog()
+        self.clock_active = False
+
+    def show_lose_dialog(self):
+        if not self.lose_dialog:
+            self.lose_dialog = MDDialog(
+                title=self.dialog_title,
+                text=f"{self.dialog_text_1} {self.score_value} \n{self.dialog_text_2}",
+                buttons=[
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_lose_dialog),
+                    MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
+                ]
+            )
+
+        self.lose_dialog.open()
+
+    def close_lose_dialog(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.lose_dialog.dismiss()
+        self.manager.current = "GamesMenu"
+
+    def restart_game(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.lose_dialog.dismiss()
+        self.score_value = 0
+        self.create_random_math_problem()
+        self.clock_active = True
+        self.timer_value = 5
+        self.timer = 5
+        self.ids.timer_bar.value = 5
+        self.timer_start()
+
 
 
 class WindowManager(ScreenManager):

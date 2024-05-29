@@ -24,6 +24,7 @@ ru = {
     "games_menu": {
         "top_title": "Игры",
         "guess_the_number_game": "Угадай число",
+        "true_false_math_game": "Верно/Неверно",
     },
     "guess_the_number_menu": {
         "top_title": "Игры",
@@ -43,6 +44,24 @@ ru = {
     "guess_the_number_reset_dialog": {
         "dialog_title": "Вы Выиграли!",
         "dialog_text": "Хотите сыграть еще раз?",
+        "cancel_btn": "Нет",
+        "confirm_btn": "Да"
+    },
+    "true_false_math_menu": {
+        "top_title": "Игры",
+        "game_name": "Верно или Неверно",
+        "game_description": "Выберите является ли математическая задача Верной или Неверной."
+    },
+    "true_false_math_game": {
+        "score": "Счет: ",
+        "timer_text": "Таймер: ",
+        "false_btn": "Неверно",
+        "true_btn": "Верно"
+    },
+    "true_false_math_lose_dialog": {
+        "dialog_title": "Вы проиграли",
+        "dialog_text_1": "ваш счет: ",
+        "dialog_text_2": "Хотите сыграть еще раз?",
         "cancel_btn": "Нет",
         "confirm_btn": "Да"
     },
