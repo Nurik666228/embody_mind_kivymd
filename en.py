@@ -25,6 +25,7 @@ en = {
         "top_title": "Games",
         "guess_the_number_game": "Guess the number",
         "true_false_math_game": "True/False",
+        "sorting_numbers_game": "Sorting",
     },
     "guess_the_number_menu": {
         "top_title": "Games",
@@ -65,4 +66,19 @@ en = {
         "cancel_btn": "No",
         "confirm_btn": "Yes"
     },
+    "sorting_numbers_menu": {
+        "top_title": "Games",
+        "game_name": "Sorting numbers",
+        "game_description": "Sort numbers in ascending order."
+    },
+    "sorting_numbers_game": {
+        "score": "Score: "
+    },
+    "sorting_numbers_lose_dialog": {
+        "dialog_title": "You lost",
+        "dialog_text_1": "your score: ",
+        "dialog_text_2": "Do you want to play again?",
+        "cancel_btn": "No",
+        "confirm_btn": "Yes"
+    }
 }

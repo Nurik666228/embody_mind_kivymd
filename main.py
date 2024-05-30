@@ -1,6 +1,3 @@
-import random
-import threading
-
 from kivy.config import Config
 
 # конфигурация окна (добавлен ради тестирования, будет убран при релизе)
@@ -203,6 +200,7 @@ class GamesMenu(Screen):
     top_title = StringProperty(text[current_lang].games_menu.top_title)
     guess_the_number_game = StringProperty(text[current_lang].games_menu.guess_the_number_game)
     true_false_math_game = StringProperty(text[current_lang].games_menu.true_false_math_game)
+    sorting_numbers_game = StringProperty(text[current_lang].games_menu.sorting_numbers_game)
 
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
@@ -486,6 +484,117 @@ class MathTrueFalseGame(Screen):
         self.timer_start()
 
 
+class SortingNumbersMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].sorting_numbers_menu.top_title)
+    game_name = StringProperty(text[current_lang].sorting_numbers_menu.game_name)
+    game_description = StringProperty(text[current_lang].sorting_numbers_menu.game_description)
+
+    def return_to_games_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "GamesMenu"
+
+
+class SortingNumbersGame(Screen):
+    global text, current_lang
+    score = StringProperty(text[current_lang].sorting_numbers_game.score)
+
+    dialog_title = StringProperty(text[current_lang].sorting_numbers_lose_dialog.dialog_title)
+    dialog_text_1 = StringProperty(text[current_lang].sorting_numbers_lose_dialog.dialog_text_1)
+    dialog_text_2 = StringProperty(text[current_lang].sorting_numbers_lose_dialog.dialog_text_2)
+    cancel_btn = StringProperty(text[current_lang].sorting_numbers_lose_dialog.cancel_btn)
+    confirm_btn = StringProperty(text[current_lang].sorting_numbers_lose_dialog.confirm_btn)
+    losing_dialog = None
+    count = 0
+    sorted_list = []
+    user_sorted_list = []
+    button_list = []
+    score_value = NumericProperty()
+
+    def on_enter(self, *args):
+        self.count = 0
+        self.score_value = 0
+        self.sorted_list = []
+        self.user_sorted_list = []
+        self.button_list = []
+        self.generate_six_numbers()
+        self.refresh_button_background()
+
+    def refresh_button_background(self):
+        self.ids.one.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+        self.ids.two.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+        self.ids.three.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+        self.ids.four.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+        self.ids.five.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+        self.ids.six.md_bg_color = (245 / 255, 245 / 255, 220 / 255)
+
+    def generate_six_numbers(self):
+        number1 = randint(-99, 99)
+        number2 = randint(-99, 99)
+        number3 = randint(-99, 99)
+        number4 = randint(-99, 99)
+        number5 = randint(-99, 99)
+        number6 = randint(-99, 99)
+
+        self.ids.one.text = str(number1)
+        self.ids.two.text = str(number2)
+        self.ids.three.text = str(number3)
+        self.ids.four.text = str(number4)
+        self.ids.five.text = str(number5)
+        self.ids.six.text = str(number6)
+
+        self.sorted_list = [number1, number2, number3, number4, number5, number6]
+        self.sorted_list.sort()
+        print(self.sorted_list)
+
+    def pressed_button(self, number_text, name):
+        if name in self.button_list:
+            pass
+        else:
+            self.button_list.append(name)
+            self.user_sorted_list.append(int(number_text))
+            print(self.user_sorted_list)
+            if self.user_sorted_list[self.count] == self.sorted_list[self.count]:
+                self.count += 1
+            else:
+                self.show_losing_dialog()
+            if self.user_sorted_list == self.sorted_list:
+                print("you won")
+                self.score_value += 1
+                self.refresh()
+
+    def refresh(self):
+        self.refresh_button_background()
+        self.count = 0
+        self.sorted_list = []
+        self.user_sorted_list = []
+        self.button_list = []
+        self.generate_six_numbers()
+
+    def show_losing_dialog(self):
+        if not self.losing_dialog:
+            self.losing_dialog = MDDialog(
+                title=self.dialog_title,
+                text=f"{self.dialog_text_1} {self.score_value} \n{self.dialog_text_2}",
+                buttons=[
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_losing_dialog),
+                    MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
+                ]
+            )
+
+        self.losing_dialog.open()
+
+    def close_losing_dialog(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.losing_dialog.dismiss()
+        self.manager.current = "GamesMenu"
+
+    def restart_game(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.losing_dialog.dismiss()
+        self.score_value = 0
+        self.refresh()
+
 
 class WindowManager(ScreenManager):
 
@@ -498,6 +607,8 @@ class WindowManager(ScreenManager):
             if self.current != "MainMenu":
                 if self.current == "GamesMenu":
                     self.current = "MainMenu"
+                elif self.current == "MathTrueFalseMenu":
+                    self.current = "GamesMenu"
                 else:
                     self.current = self.previous()
             return True

@@ -25,6 +25,7 @@ ru = {
         "top_title": "Игры",
         "guess_the_number_game": "Угадай число",
         "true_false_math_game": "Верно/Неверно",
+        "sorting_numbers_game": "Сортировка",
     },
     "guess_the_number_menu": {
         "top_title": "Игры",
@@ -65,4 +66,19 @@ ru = {
         "cancel_btn": "Нет",
         "confirm_btn": "Да"
     },
+    "sorting_numbers_menu": {
+        "top_title": "Игры",
+        "game_name": "Сортировка чисел",
+        "game_description": "Отсортируй числа по возрастанию."
+    },
+    "sorting_numbers_game": {
+        "score": "Счет: "
+    },
+    "sorting_numbers_lose_dialog": {
+        "dialog_title": "Вы проиграли",
+        "dialog_text_1": "ваш счет: ",
+        "dialog_text_2": "Хотите сыграть еще раз?",
+        "cancel_btn": "Нет",
+        "confirm_btn": "Да"
+    }
 }

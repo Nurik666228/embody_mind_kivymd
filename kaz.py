@@ -25,6 +25,7 @@ kaz = {
         "top_title": "Ойындар",
         "guess_the_number_game": "Санды тап",
         "true_false_math_game": "Дұрыс/Қате",
+        "sorting_numbers_game": "Сұрыптау",
     },
     "guess_the_number_menu": {
         "top_title": "Ойындар",
@@ -65,4 +66,19 @@ kaz = {
         "cancel_btn": "Жоқ",
         "confirm_btn": "Ия"
     },
+    "sorting_numbers_menu": {
+        "top_title": "Ойындар",
+        "game_name": "Сандарды сұрыптау",
+        "game_description": "Сандарды өсу ретімен сұрыпта"
+    },
+    "sorting_numbers_game": {
+        "score": "Ұпай: "
+    },
+    "sorting_numbers_lose_dialog": {
+        "dialog_title": "Сіз жеңілдіңіз",
+        "dialog_text_1": "сіздің ұпайыңыз: ",
+        "dialog_text_2": "Тағы да ойнағыңыз келе ме?",
+        "cancel_btn": "Жоқ",
+        "confirm_btn": "Ия"
+    }
 }
