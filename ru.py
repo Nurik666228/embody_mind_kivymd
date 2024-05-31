@@ -26,6 +26,7 @@ ru = {
         "guess_the_number_game": "Угадай число",
         "true_false_math_game": "Верно/Неверно",
         "sorting_numbers_game": "Сортировка",
+        "comparison_game": "Сравнение"
     },
     "guess_the_number_menu": {
         "top_title": "Игры",
@@ -80,5 +81,20 @@ ru = {
         "dialog_text_2": "Хотите сыграть еще раз?",
         "cancel_btn": "Нет",
         "confirm_btn": "Да"
-    }
+    },
+    "comparison_menu": {
+        "top_title": "Игры",
+        "game_name": "Cравнения задач",
+        "game_description": "Сравните две математические задачи."
+    },
+    "comparison_game": {
+        "score": "Счет: ",
+        "timer_text": "Таймер: "
+    },
+    "comparison_lose_dialog": {
+        "dialog_title": "Вы проиграли",
+        "dialog_text": "Хотите сыграть еще раз?",
+        "cancel_btn": "Нет",
+        "confirm_btn": "Да"
+    },
 }

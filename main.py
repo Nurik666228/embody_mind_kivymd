@@ -201,6 +201,7 @@ class GamesMenu(Screen):
     guess_the_number_game = StringProperty(text[current_lang].games_menu.guess_the_number_game)
     true_false_math_game = StringProperty(text[current_lang].games_menu.true_false_math_game)
     sorting_numbers_game = StringProperty(text[current_lang].games_menu.sorting_numbers_game)
+    comparison_game = StringProperty(text[current_lang].games_menu.comparison_game)
 
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
@@ -341,6 +342,7 @@ class MathTrueFalseGame(Screen):
     timer_value = 5
     timer = NumericProperty(timer_value)
     score_value = NumericProperty(0)
+    print_score_value = NumericProperty(0)
     # current_operator = None
     string_of_operator = None
     solution = None
@@ -452,13 +454,15 @@ class MathTrueFalseGame(Screen):
 
     def incorrect(self):
         self.show_lose_dialog()
+        self.score_value = 0
         self.clock_active = False
 
     def show_lose_dialog(self):
+        self.print_score_value = self.score_value
         if not self.lose_dialog:
             self.lose_dialog = MDDialog(
                 title=self.dialog_title,
-                text=f"{self.dialog_text_1} {self.score_value} \n{self.dialog_text_2}",
+                text=f"{self.dialog_text_2}",
                 buttons=[
                     MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_lose_dialog),
                     MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
@@ -474,13 +478,13 @@ class MathTrueFalseGame(Screen):
 
     def restart_game(self, obj):
         EmbodyMindApp().play_click_sound()
-        self.lose_dialog.dismiss()
         self.score_value = 0
         self.create_random_math_problem()
         self.clock_active = True
         self.timer_value = 5
         self.timer = 5
         self.ids.timer_bar.value = 5
+        self.lose_dialog.dismiss()
         self.timer_start()
 
 
@@ -575,7 +579,7 @@ class SortingNumbersGame(Screen):
         if not self.losing_dialog:
             self.losing_dialog = MDDialog(
                 title=self.dialog_title,
-                text=f"{self.dialog_text_1} {self.score_value} \n{self.dialog_text_2}",
+                text=self.dialog_text_2,
                 buttons=[
                     MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_losing_dialog),
                     MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
@@ -596,6 +600,228 @@ class SortingNumbersGame(Screen):
         self.refresh()
 
 
+class ComparisonMathMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].comparison_menu.top_title)
+    game_name = StringProperty(text[current_lang].comparison_menu.game_name)
+    game_description = StringProperty(text[current_lang].comparison_menu.game_description)
+
+    def return_to_games_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "GamesMenu"
+
+
+class ComparisonMathGame(Screen):
+    global text, current_lang
+
+    score = StringProperty(text[current_lang].comparison_game.score)
+    timer_text = StringProperty(text[current_lang].comparison_game.timer_text)
+
+    dialog_title = StringProperty(text[current_lang].comparison_lose_dialog.dialog_title)
+    dialog_text = StringProperty(text[current_lang].comparison_lose_dialog.dialog_text)
+    cancel_btn = StringProperty(text[current_lang].comparison_lose_dialog.cancel_btn)
+    confirm_btn = StringProperty(text[current_lang].comparison_lose_dialog.confirm_btn)
+
+    lose_dialog = None
+    clock_active = None
+    timer_value = 5
+    timer = NumericProperty(timer_value)
+    score_value = NumericProperty()
+
+    string_of_operator = None
+    solution = None
+    string_of_operator2 = None
+    solution2 = None
+
+    def on_enter(self, *args):
+        self.score_value = 0
+        self.clock_active = True
+        self.timer_value = 5
+        self.timer = 5
+        self.ids.timer_bar.value = 5
+        self.timer_start()
+        self.create_math_problems()
+
+    def timer_start(self):
+        # print("timer is on")
+        Clock.schedule_once(self.decrease_timer, 1)
+
+    def decrease_timer(self, dt):
+        if self.clock_active:
+            if self.timer <= 0:
+                print("timer stopped")
+                self.show_lose_dialog()
+                # self.show_lose_dialog()
+            else:
+                self.timer -= 1
+                self.ids.timer_bar.value -= 1
+                # print(self.ids.timer_bar.value)
+                self.timer_start()
+
+    def create_math_problems(self):
+        ops = {
+            '+': operator.add,
+            '-': operator.sub,
+            '*': operator.mul,
+            '/': operator.truediv,  # use operator.div for Python 2
+        }
+
+        number1 = randint(0, 20)
+        number2 = randint(0, 20)
+
+        random_operator = randint(1, 4)
+        if random_operator == 1:
+            self.string_of_operator = "+"
+            print(self.string_of_operator)
+        elif random_operator == 2:
+            self.string_of_operator = "-"
+            print(self.string_of_operator)
+        elif random_operator == 3:
+            self.string_of_operator = "*"
+            print(self.string_of_operator)
+        else:
+            self.string_of_operator = "/"
+            print(self.string_of_operator)
+
+        if self.string_of_operator == "-":
+            if number1 < number2:
+                number1, number2 = number2, number1
+                print(number1, number2)
+
+        if self.string_of_operator == "*":
+            number1 = randint(0, 10)
+            number2 = randint(0, 10)
+
+        if self.string_of_operator == "/":
+            number1 = randint(1, 20)
+            number2 = randint(1, 20)
+            if number1 < number2:
+                number1, number2 = number2, number1
+                print(number1, number2)
+            while number1 / number2 != number1 // number2:
+                number1 += 1
+                print(f"Incremented: {number1}")
+
+        self.solution = ops[self.string_of_operator](number1, number2)
+        print(number1)
+        print(self.string_of_operator)
+        print(number2)
+        print(self.solution)
+
+        number3 = randint(0, 20)
+        number4 = randint(0, 20)
+
+        random_operator2 = randint(1, 4)
+        if random_operator2 == 1:
+            self.string_of_operator2 = "+"
+            print(self.string_of_operator2)
+        elif random_operator2 == 2:
+            self.string_of_operator2 = "-"
+            print(self.string_of_operator)
+        elif random_operator2 == 3:
+            self.string_of_operator2 = "*"
+            print(self.string_of_operator)
+        else:
+            self.string_of_operator2 = "/"
+            print(self.string_of_operator)
+
+        if self.string_of_operator2 == "-":
+            if number3 < number4:
+                number3, number4 = number4, number3
+                print(number3, number4)
+
+        if self.string_of_operator == "*":
+            number3 = randint(0, 10)
+            number4 = randint(0, 10)
+
+        if self.string_of_operator2 == "/":
+            number3 = randint(1, 20)
+            number4 = randint(1, 20)
+            if number3 < number4:
+                number3, number4 = number4, number3
+                print(number3, number4)
+            while number3 / number4 != number3 // number4:
+                number3 += 1
+                print(f"Incremented: {number3}")
+
+        print("________________________")
+
+        self.solution2 = ops[self.string_of_operator2](number3, number4)
+        print(number3)
+        print(self.string_of_operator2)
+        print(number4)
+        print(self.solution2)
+
+        self.ids.math_problem.text = (f"{number1} {self.string_of_operator} {number2}\n?\n{number3} "
+                                      f"{self.string_of_operator2} {number4}")
+
+    def less_button(self):
+        if self.solution <= self.solution2:
+            print("ti pobedil")
+            self.correct()
+        else:
+            print("ti proigral")
+            self.incorrect()
+
+    def equal_button(self):
+        if self.solution == self.solution2:
+            print("ti pobedil")
+            self.correct()
+        else:
+            print("ti proigral")
+            self.incorrect()
+
+    def more_button(self):
+        if self.solution >= self.solution2:
+            print("ti pobedil")
+            self.correct()
+        else:
+            print("ti proigral")
+            self.incorrect()
+
+    def correct(self):
+        self.score_value += 1
+        self.create_math_problems()
+        self.timer = self.timer_value
+        self.ids.timer_bar.value = self.timer_value
+
+    def incorrect(self):
+        print(self.score_value)
+        self.show_lose_dialog()
+        self.clock_active = False
+
+    def show_lose_dialog(self):
+        if not self.lose_dialog:
+            self.lose_dialog = MDDialog(
+                title=self.dialog_title,
+                text=self.dialog_text,
+                buttons=[
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_lose_dialog),
+                    MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
+                ]
+            )
+        self.lose_dialog.open()
+
+    def close_lose_dialog(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.lose_dialog.dismiss()
+        self.manager.current = "GamesMenu"
+
+    def restart_game(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.lose_dialog.dismiss()
+        self.score_value = 0
+        self.create_math_problems()
+        self.clock_active = True
+        self.timer_value = 5
+        self.timer = 5
+        self.ids.timer_bar.value = 5
+        self.timer_start()
+
+    def on_leave(self, *args):
+        self.clock_active = False
+
+
 class WindowManager(ScreenManager):
 
     def __init__(self, **kwargs):
@@ -608,6 +834,10 @@ class WindowManager(ScreenManager):
                 if self.current == "GamesMenu":
                     self.current = "MainMenu"
                 elif self.current == "MathTrueFalseMenu":
+                    self.current = "GamesMenu"
+                elif self.current == "SortingNumbersMenu":
+                    self.current = "MainMenu"
+                elif self.current == "ComparisonMathMenu":
                     self.current = "GamesMenu"
                 else:
                     self.current = self.previous()

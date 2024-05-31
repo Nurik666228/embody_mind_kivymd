@@ -26,6 +26,7 @@ en = {
         "guess_the_number_game": "Guess the number",
         "true_false_math_game": "True/False",
         "sorting_numbers_game": "Sorting",
+        "comparison_game": "Comparison",
     },
     "guess_the_number_menu": {
         "top_title": "Games",
@@ -78,6 +79,21 @@ en = {
         "dialog_title": "You lost",
         "dialog_text_1": "your score: ",
         "dialog_text_2": "Do you want to play again?",
+        "cancel_btn": "No",
+        "confirm_btn": "Yes"
+    },
+    "comparison_menu": {
+        "top_title": "Games",
+        "game_name": "Math comparison",
+        "game_description": "Compare two math problems."
+    },
+    "comparison_game": {
+        "score": "Score: ",
+        "timer_text": "Timer: "
+    },
+    "comparison_lose_dialog": {
+        "dialog_title": "You lost",
+        "dialog_text": "Do you want to play again?",
         "cancel_btn": "No",
         "confirm_btn": "Yes"
     }

@@ -26,6 +26,7 @@ kaz = {
         "guess_the_number_game": "Санды тап",
         "true_false_math_game": "Дұрыс/Қате",
         "sorting_numbers_game": "Сұрыптау",
+        "comparison_game": "Салыстыру"
     },
     "guess_the_number_menu": {
         "top_title": "Ойындар",
@@ -80,5 +81,20 @@ kaz = {
         "dialog_text_2": "Тағы да ойнағыңыз келе ме?",
         "cancel_btn": "Жоқ",
         "confirm_btn": "Ия"
-    }
+    },
+    "comparison_menu": {
+        "top_title": "Ойындар",
+        "game_name": "Есеп салыстыру",
+        "game_description": "Екі математикалық есепті салыстыр."
+    },
+    "comparison_game": {
+        "score": "Ұпай: ",
+        "timer_text": "Таймер: "
+    },
+    "comparison_lose_dialog": {
+        "dialog_title": "Сіз жеңілдіңіз",
+        "dialog_text": "Тағы да ойнағыңыз келе ме?",
+        "cancel_btn": "Жоқ",
+        "confirm_btn": "Ия"
+    },
 }

@@ -10,6 +10,9 @@
     MathTrueFalseGame:
     SortingNumbersMenu:
     SortingNumbersGame:
+    ComparisonMathMenu:
+    ComparisonMathGame:
+
 
 <MainMenu>:
     name: "MainMenu"
@@ -270,10 +273,21 @@
         line_width: 1.5
         size_hint: (0.45, 0.2)
         padding: "2dp"
+        orientation: "vertical"
         pos_hint: {"center_x": .75, "center_y": .50}
         ripple_behavior: True
         on_press: app.play_click_sound()
-        on_release:print("worked")
+        on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "ComparisonMathMenu"
+        Image:
+            source: "images/comparison.png"
+            size_hint_y: .7
+            padding: 2
+        MDLabel:
+            text: root.comparison_game
+            halign: "center"
+            size_hint_y: .3
 
     MDCard:
         md_bg_color: 245/255, 245/255, 220/255
@@ -297,13 +311,6 @@
         ripple_behavior: True
         on_press: app.play_click_sound()
         on_release:print("worked")
-        Image:
-            source: "images/guess_number.png"
-            size_hint_y: .8
-        MDLabel:
-            text: "decoy"
-            halign: "center"
-            size_hint_y: .2
 
 
 <GuessTheNumberMenu>:
@@ -640,7 +647,6 @@
             self.md_bg_color = (0/255, 255/255, 0/255)
             root.pressed_button(self.text, self.name)
 
-
     MDRectangleFlatButton:
         id: six
         name: "six"
@@ -657,6 +663,132 @@
             root.pressed_button(self.text, self.name)
 
 
+<ComparisonMathMenu>:
+    name: "ComparisonMathMenu"
+    FloatLayout:
+        MenuBackground:
+        MDTopAppBar:
+            id: games_top_bar
+            pos_hint: {"right": 1, "top": 1}
+            elevation: 0
+            title: root.top_title
+            anchor_title: "left"
+            md_bg_color: "#616161"
+            left_action_items: [["arrow-left", lambda x: root.return_to_games_menu()]]
+
+        MDIconButton:
+            id: SN_play_btn
+            icon: "play"
+            pos_hint: {"center_x": 0.5, "center_y": 0.6}
+            size_hint: (0.3, 0.15)
+            icon_size:"100dp"
+            on_press: app.play_click_sound()
+            on_release:
+                root.manager.transition = NoTransition()
+                root.manager.current = "ComparisonMathGame"
+
+        BoxLayout:
+            id: SN_game_name
+            pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_name
+                halign: 'center'
+                font_style: "H5"
+
+        BoxLayout:
+            id: SN_game_info
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_description
+                halign: 'center'
+                font_style: "Subtitle1"
+
+
+<ComparisonMathGame>:
+    name: "ComparisonMathGame"
+    MenuBackground:
+    MDIconButton:
+        icon: "home"
+        pos_hint: {"center_x": 0.5, "center_y": 0.97}
+        on_press: app.play_click_sound()
+        on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "GamesMenu"
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.2, 'center_y': 0.9}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.score + str(root.score_value)
+            halign: 'center'
+            font_style: "Subtitle1"
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.2, 'center_y': 0.85}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            id: timer
+            text: root.timer_text + str(root.timer)
+            halign: 'center'
+            font_style: "Subtitle1"
+
+    ProgressBar:
+        id: timer_bar
+        max: 5
+        value: 5
+        pos_hint: {'center_x': 0.5, 'center_y': 0.80}
+        size_hint: (0.8, 0.1)
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.60}
+        size_hint: (0.7, 0.1)
+        MDLabel:
+            id: math_problem
+            text: ""
+            halign: 'center'
+            font_style: "H4"
+
+    MDRectangleFlatButton:
+        id: less
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        pos_hint: {'center_x': 0.17, 'center_y': 0.35}
+        size_hint: (0.3, 0.04)
+        text: "<"
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release:
+            root.less_button()
+
+
+    MDRectangleFlatButton:
+        id: equal
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        pos_hint: {'center_x': 0.50, 'center_y': 0.35}
+        size_hint: (0.3, 0.04)
+        text: "="
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release:
+            root.equal_button()
+
+    MDRectangleFlatButton:
+        id: more
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        pos_hint: {'center_x': 0.83, 'center_y': 0.35}
+        size_hint: (0.3, 0.04)
+        text: ">"
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release:
+            root.more_button()
 
 # класс отвечающий за задний фон всех меню
 <MenuBackground@FloatLayout>:
