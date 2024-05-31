@@ -267,12 +267,12 @@ class GuessTheNumberGame(Screen):
             else:
                 if input_number < self.random_number:
                     if current_lang == "kaz":
-                        self.game_label_text = f"{input_number}, {self.lesser_number}"
+                        self.game_label_text = f"{input_number} {self.lesser_number}"
                     else:
                         self.game_label_text = f"{self.greater_number} {input_number}"
                 elif input_number > self.random_number:
                     if current_lang == "kaz":
-                        self.game_label_text = f"{input_number}, {self.greater_number}"
+                        self.game_label_text = f"{input_number} {self.greater_number}"
                     else:
                         self.game_label_text = f"{self.lesser_number} {input_number}"
                 else:
@@ -752,8 +752,8 @@ class ComparisonMathGame(Screen):
         print(number4)
         print(self.solution2)
 
-        self.ids.math_problem.text = (f"{number1} {self.string_of_operator} {number2}\n?\n{number3} "
-                                      f"{self.string_of_operator2} {number4}")
+        self.ids.math_problem.text = (f"({number1} {self.string_of_operator} {number2}) ? ({number3} "
+                                      f"{self.string_of_operator2} {number4})")
 
     def less_button(self):
         if self.solution <= self.solution2:

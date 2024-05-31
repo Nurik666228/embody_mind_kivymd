@@ -5,7 +5,7 @@ kaz = {
         "quit_btn": "Шығу"
     },
     "quit_dialog": {
-        "title": "Сіз сенімдісіз бе?",
+        "title": "Шығуға сенімдісіз бе?",
         "cancel_btn": "Жоқ",
         "yes_btn": "Ия"
     },
@@ -39,8 +39,8 @@ kaz = {
         "empty_textfield_mistake": "1 ден 1000-ға дейін сан жазыңыз",
         "small_number_mistake": "Мән 0-ден үлкен болуы керек",
         "big_number_mistake": "Мән 1000-нан аз немесе оған тең болуы керек.",
-        "greater_number": "ойдағы саннан үлкен",
-        "lesser_number": "ойдағы саннан кіші",
+        "greater_number": "саннынан кіші",
+        "lesser_number": "саннынан үлкен",
         "win_label": "Сіз жеңдіңіз!"
     },
     "guess_the_number_reset_dialog": {

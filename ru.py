@@ -5,7 +5,7 @@ ru = {
         "quit_btn": "Выйти"
     },
     "quit_dialog": {
-        "title": "Вы уверены?",
+        "title": "Вы хотите выйти?",
         "cancel_btn": "Отмена",
         "yes_btn": "Да"
     },

@@ -5,7 +5,7 @@ en = {
         "quit_btn": "Quit"
     },
     "quit_dialog": {
-        "title": "Are you sure?",
+        "title": "Do you want to quit?",
         "cancel_btn": "Cancel",
         "yes_btn": "Yes"
     },
