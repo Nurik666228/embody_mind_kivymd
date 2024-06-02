@@ -12,6 +12,8 @@
     SortingNumbersGame:
     ComparisonMathMenu:
     ComparisonMathGame:
+    FindTheWordMenu:
+    FindTheWordGame:
 
 
 <MainMenu>:
@@ -239,7 +241,6 @@
         Image:
             source: "images/MathTrueFalse.png"
             size_hint_y: .7
-            padding: 2
         MDLabel:
             text: root.true_false_math_game
             halign: "center"
@@ -261,7 +262,6 @@
         Image:
             source: "images/sorting_game.png"
             size_hint_y: .7
-            padding: 2
         MDLabel:
             text: root.sorting_numbers_game
             halign: "center"
@@ -283,7 +283,6 @@
         Image:
             source: "images/comparison.png"
             size_hint_y: .7
-            padding: 2
         MDLabel:
             text: root.comparison_game
             halign: "center"
@@ -295,10 +294,20 @@
         line_width: 1.5
         size_hint: (0.45, 0.2)
         padding: "2dp"
+        orientation: "vertical"
         pos_hint: {"center_x": .25, "center_y": .25}
         ripple_behavior: True
         on_press: app.play_click_sound()
-        on_release:print("worked")
+        on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "FindTheWordMenu"
+        Image:
+            source: "images/find.png"
+            size_hint_y: .7
+        MDLabel:
+            text: root.find_the_word
+            halign: "center"
+            size_hint_y: .3
 
     MDCard:
         md_bg_color: 245/255, 245/255, 220/255
@@ -306,11 +315,19 @@
         line_width: 1.5
         size_hint: (0.45, 0.2)
         padding: "2dp"
+        orientation: "vertical"
         pos_hint: {"center_x": .75, "center_y": .25}
         orientation: "vertical"
         ripple_behavior: True
         on_press: app.play_click_sound()
         on_release:print("worked")
+        Image:
+            source: "images/guess_the_word.png"
+            size_hint_y: .7
+        MDLabel:
+            text: "Угадай слово"
+            halign: "center"
+            size_hint_y: .3
 
 
 <GuessTheNumberMenu>:
@@ -789,6 +806,106 @@
         on_press: app.play_click_sound()
         on_release:
             root.more_button()
+
+
+<FindTheWordMenu>:
+    name: "FindTheWordMenu"
+    FloatLayout:
+        MenuBackground:
+        MDTopAppBar:
+            id: games_top_bar
+            pos_hint: {"right": 1, "top": 1}
+            elevation: 0
+            title: root.top_title
+            anchor_title: "left"
+            md_bg_color: "#616161"
+            left_action_items: [["arrow-left", lambda x: root.return_to_games_menu()]]
+
+        MDIconButton:
+            id: FTW_play_btn
+            icon: "play"
+            pos_hint: {"center_x": 0.5, "center_y": 0.6}
+            size_hint: (0.3, 0.15)
+            icon_size:"100dp"
+            on_press: app.play_click_sound()
+            on_release:
+                root.manager.transition = NoTransition()
+                root.manager.current = "FindTheWordGame"
+
+        BoxLayout:
+            id: FTW_game_name
+            pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_name
+                halign: 'center'
+                font_style: "H5"
+
+        BoxLayout:
+            id: FTW_game_info
+            pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+            size_hint: (0.5, 0.1)
+            MDLabel:
+                text: root.game_description
+                halign: 'center'
+                font_style: "Subtitle1"
+
+
+<FindTheWordGame>:
+    name: "FindTheWordGame"
+    MenuBackground:
+    MDIconButton:
+        icon: "home"
+        pos_hint: {"center_x": 0.3, "center_y": 0.97}
+        on_press: app.play_click_sound()
+        on_release:
+            root.manager.transition = NoTransition()
+            root.manager.current = "GamesMenu"
+
+    MDIconButton:
+        icon: "restart"
+        pos_hint: {"center_x": 0.7, "center_y": 0.97}
+        on_press: app.play_click_sound()
+        on_release:
+            root.shuffle_random_word()
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.75}
+        size_hint: (0.9, 0.1)
+        MDLabel:
+            text: root.game_title
+            halign: 'center'
+            font_style: "H5"
+
+    BoxLayout:
+        pos_hint: {'center_x': 0.5, 'center_y': 0.60}
+        size_hint: (0.5, 0.1)
+        MDLabel:
+            text: root.shuffled_word
+            halign: 'center'
+            font_style: "H5"
+
+    MDTextField:
+        id: text_input
+        hint_text: root.hint_text
+        max_text_length: 5
+        pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+        size_hint: (0.5, None)
+
+    MDRectangleFlatButton:
+        id: FTW_enter_number
+        md_bg_color: 245/255, 245/255, 220/255
+        line_color: 176/255,0,0,1
+        text: root.enter_button
+        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+        size_hint: (0.3, 0.05)
+        line_width: 1.3
+        font_style: "Button"
+        on_press: app.play_click_sound()
+        on_release:
+            root.check_word()
+            text_input.text = ""
+
 
 # класс отвечающий за задний фон всех меню
 <MenuBackground@FloatLayout>:

@@ -11,18 +11,19 @@ from kivymd.uix.button import MDRectangleFlatButton, MDFlatButton, MDRectangleFl
 from kivymd.uix.label import MDLabel
 from kivymd.uix.dialog import MDDialog
 from kivy.graphics import Color, Rectangle
+from kivymd.uix.snackbar import Snackbar
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty, Clock
 from types import SimpleNamespace
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 
-from random import randint
+from random import randint, sample
 import operator
 import json
 # импортируются три файла с языками
-from en import en
-from ru import ru
-from kaz import kaz
+from en import en, find_word_en
+from ru import ru, find_word_ru
+from kaz import kaz, find_word_kaz
 
 # открывает файл с параметрами и записывает текущий язык
 with open("settings.json", "r") as f:
@@ -202,6 +203,7 @@ class GamesMenu(Screen):
     true_false_math_game = StringProperty(text[current_lang].games_menu.true_false_math_game)
     sorting_numbers_game = StringProperty(text[current_lang].games_menu.sorting_numbers_game)
     comparison_game = StringProperty(text[current_lang].games_menu.comparison_game)
+    find_the_word = StringProperty(text[current_lang].games_menu.find_the_word)
 
     def return_to_main_menu(self):
         EmbodyMindApp().play_click_sound()
@@ -822,6 +824,96 @@ class ComparisonMathGame(Screen):
         self.clock_active = False
 
 
+class FindTheWordMenu(Screen):
+    global text, current_lang
+    top_title = StringProperty(text[current_lang].find_the_word_menu.top_title)
+    game_name = StringProperty(text[current_lang].find_the_word_menu.game_name)
+    game_description = StringProperty(text[current_lang].find_the_word_menu.game_description)
+
+    def return_to_games_menu(self):
+        EmbodyMindApp().play_click_sound()
+        self.manager.current = "GamesMenu"
+
+
+class FindTheWordGame(Screen):
+    global text, current_lang
+    game_title = StringProperty(text[current_lang].find_the_word_game.game_title)
+    hint_text = StringProperty(text[current_lang].find_the_word_game.hint_text)
+    hint_wrong = StringProperty(text[current_lang].find_the_word_game.hint_wrong)
+    enter_button = StringProperty(text[current_lang].find_the_word_game.enter_button)
+
+    # диалоговое окно
+    dialog_title = StringProperty(text[current_lang].find_the_word_dialog.dialog_title)
+    dialog_text = StringProperty(text[current_lang].find_the_word_dialog.dialog_text)
+    cancel_btn = StringProperty(text[current_lang].find_the_word_dialog.cancel_btn)
+    confirm_btn = StringProperty(text[current_lang].find_the_word_dialog.confirm_btn)
+
+    restart_dialog = None
+
+    random_word = ""
+    shuffled_word = StringProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(on_key_down=self._on_keyboard_down)
+
+    def _on_keyboard_down(self, instance, keyboard, keycode, text, modifiers):
+        if self.ids.text_input.focus and keycode == 40:  # 40 - Enter key pressed
+            self.check_word()
+            self.ids.text_input.text = ""
+
+    def on_enter(self, *args):
+        self.shuffle_random_word()
+
+    def shuffle_random_word(self):
+        self.ids.text_input.hint_text = "enter word"
+        if current_lang == "en":
+            self.random_word = find_word_en[randint(0, len(find_word_en) - 1)]
+            print(self.random_word)
+            self.shuffled_word = ''.join(sample(self.random_word, len(self.random_word)))
+            print(self.shuffled_word)
+        elif current_lang == "ru":
+            self.random_word = find_word_ru[randint(0, len(find_word_ru) - 1)]
+            self.shuffled_word = ''.join(sample(self.random_word, len(self.random_word)))
+            print(self.random_word)
+        else:
+            self.random_word = find_word_kaz[randint(0, len(find_word_kaz) - 1)]
+            self.shuffled_word = ''.join(sample(self.random_word, len(self.random_word)))
+            print(self.random_word)
+
+    def check_word(self, *args):
+        guessed_word = self.ids.text_input.text
+        if guessed_word == self.random_word:
+            print("ti pobedil")
+            self.show_restart_dialog()
+        else:
+            print("ti proigral")
+            self.ids.text_input.hint_text = self.hint_wrong
+
+    def show_restart_dialog(self):  # показывает диалоговое окно закрытия приложения
+        if not self.restart_dialog:
+            self.restart_dialog = MDDialog(
+                title=self.dialog_title,
+                text=self.dialog_text,
+                buttons=[
+                    MDFlatButton(text=self.cancel_btn, font_style="Button", on_release=self.close_restart_dialog),
+                    MDFlatButton(text=self.confirm_btn, font_style="Button", on_release=self.restart_game)
+                ]
+            )
+
+        self.restart_dialog.open()
+
+    def close_restart_dialog(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.restart_dialog.dismiss()
+        self.manager.current = "GamesMenu"
+
+    def restart_game(self, obj):
+        EmbodyMindApp().play_click_sound()
+        self.restart_dialog.dismiss()
+        self.shuffle_random_word()
+
+
 class WindowManager(ScreenManager):
 
     def __init__(self, **kwargs):
@@ -836,11 +928,15 @@ class WindowManager(ScreenManager):
                 elif self.current == "MathTrueFalseMenu":
                     self.current = "GamesMenu"
                 elif self.current == "SortingNumbersMenu":
-                    self.current = "MainMenu"
+                    self.current = "GamesMenu"
                 elif self.current == "ComparisonMathMenu":
+                    self.current = "GamesMenu"
+                elif self.current == "FindTheWordMenu":
                     self.current = "GamesMenu"
                 else:
                     self.current = self.previous()
+            else:
+                MainMenu().show_quit_dialog()
             return True
         else:  # the key now does nothing
             return False

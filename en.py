@@ -27,6 +27,7 @@ en = {
         "true_false_math_game": "True/False",
         "sorting_numbers_game": "Sorting",
         "comparison_game": "Comparison",
+        "find_the_word": "Find the word",
     },
     "guess_the_number_menu": {
         "top_title": "Games",
@@ -96,5 +97,27 @@ en = {
         "dialog_text": "Do you want to play again?",
         "cancel_btn": "No",
         "confirm_btn": "Yes"
-    }
+    },
+    "find_the_word_menu": {
+        "top_title": "Games",
+        "game_name": "Find the word",
+        "game_description": "Arrange the letters correctly."
+    },
+    "find_the_word_game": {
+        "game_title": "Find the word hidden in this letters:",
+        "hint_text": "Enter word",
+        "hint_wrong": "Wrong",
+        "enter_button": "Enter"
+    },
+    "find_the_word_dialog": {
+        "dialog_title": "You won!",
+        "dialog_text": "Do you want to play again?",
+        "cancel_btn": "No",
+        "confirm_btn": "Yes"
+    },
 }
+
+find_word_en = ["clock", "apple", "lemon", "juice", "storm", "music", "pizza", "fruit", "salad", "robot",
+                "glass", "water", "candy", "block", "birch", "brain", "cliff", "dummy", "event", "fries",
+                "flask", "focus", "globe", "actor", "beach", "dream", "night", "field", "photo", "radio",
+                "shell", "smile", "young", "video", "voice"]
